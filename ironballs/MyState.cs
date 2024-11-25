@@ -19,6 +19,7 @@ namespace ironballs
         private readonly InputMap _inputMap;
         private Random _random = new Random();
         private Node _selectedBall;
+        private Node _lastBall;
 
         private Vector3 _curVelocity;
         private float _inertia = 0.9f;
@@ -51,6 +52,7 @@ namespace ironballs
             _selectNode = _scene.FindChild("SelectNode", true);
             //today only
             _selectedBall = _scene.FindChild("ball1", true);
+            _lastBall = _selectedBall;
             var temp = _scene.GetChildren();
             foreach (var child in temp)
             {
@@ -204,7 +206,7 @@ namespace ironballs
                     else
                     {
                         nowPlayer = false;
-                        AiAroowPos();
+                        AiRandomPos();
                     }
                 }
                 else NextPlayer();
@@ -247,7 +249,7 @@ namespace ironballs
                     else
                     {
                         nowPlayer = false;
-                        AiAroowPos();
+                        AiNullPos();
                     }
                 }
                 else NextPlayer();
@@ -260,11 +262,34 @@ namespace ironballs
             _arrowNode.Position = v;
             ArrowDir();
         }
+        public void AiRandomPos()
+        {
+            var v = new Vector3(_random.Next(-4,4), 0.25f, _random.Next(-4, 4));
+            _arrowNode.Position = v;
+            ArrowDir();
+        }
+        public void AiLastPos()
+        {
+            if (_lastBall != null)
+            {
+                var t = _lastBall.Position - _selectedBall.Position;
+                var v = new Vector3(t.X * 2, 0.25f, t.Z * 2);
+                _arrowNode.Position = v;
+                ArrowDir();
+            }
+            else AiRandomPos();
+        }
+        public void AiNullPos()
+        {
+            _arrowNode.Position = new Vector3(0, 0.25f, 0);
+            ArrowDir();
+        }
 
         public void Hit()
         {
             var body = _selectedBall.GetComponent<RigidBody>();
             body.ApplyImpulse(( _selectedBall.Position - _arrowNode.Position).Normalized * 1.15f);
+            _lastBall = _selectedBall;
             _hitTimer = 300;
         }
 

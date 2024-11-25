@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <resource _id="1">
 	<attributes>
-		<attribute name="Next Node ID" type="Int" value="34" />
-		<attribute name="Next Component ID" type="Int" value="96" />
+		<attribute name="Next Node ID" type="Int" value="38" />
+		<attribute name="Next Component ID" type="Int" value="105" />
 	</attributes>
 	<components>
 		<component _id="1" _typeName="Octree" />
@@ -120,7 +120,7 @@
 		<node _id="10">
 			<attributes>
 				<attribute name="Name" type="String" value="ball1" />
-				<attribute name="Position" type="Vector3" value="0.005946 0.325519 0.650391" />
+				<attribute name="Position" type="Vector3" value="0.207298 0.325519 0.642138" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -137,7 +137,7 @@
 				</component>
 				<component _id="19" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="0.005946 0.325519 0.650391" />
+						<attribute name="Physics Position" type="Vector3" value="0.207298 0.325519 0.642138" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Friction" type="Float" value="1.000000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
@@ -149,7 +149,7 @@
 		<node _id="11">
 			<attributes>
 				<attribute name="Name" type="String" value="ball2" />
-				<attribute name="Position" type="Vector3" value="0.005946 0.325519 -0.65323" />
+				<attribute name="Position" type="Vector3" value="0.207298 0.325519 -0.661484" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -166,7 +166,7 @@
 				</component>
 				<component _id="26" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="0.005946 0.325519 -0.65323" />
+						<attribute name="Physics Position" type="Vector3" value="0.207298 0.325519 -0.661484" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -177,7 +177,7 @@
 		<node _id="14">
 			<attributes>
 				<attribute name="Name" type="String" value="CameraNode" />
-				<attribute name="Position" type="Vector3" value="-0.208491 5.750593 -0.098934" />
+				<attribute name="Position" type="Vector3" value="0 5.750593 0" />
 				<attribute name="Rotation" type="Quaternion" value="0.500002 0.500002 0.499998 -0.499998" />
 			</attributes>
 			<components>
@@ -190,18 +190,26 @@
 				<attribute name="Position" type="Vector3" value="-0.615698 0.25 0.435137" />
 				<attribute name="Scale" type="Vector3" value="0.05 0.05 0.07" />
 			</attributes>
-			<components>
-				<component _id="38" _typeName="PrefabReference">
+			<nodes>
+				<node _id="37">
 					<attributes>
-						<attribute name="Prefab" type="ResourceRef" value="PrefabResource;Models/my/arrow.glb.d/Prefab.prefab" />
+						<attribute name="Name" type="String" value="arrow" />
+						<attribute name="Position" type="Vector3" value="0 4 0" />
 					</attributes>
-				</component>
-			</components>
+					<components>
+						<component _id="104" _typeName="PrefabReference">
+							<attributes>
+								<attribute name="Prefab" type="ResourceRef" value="PrefabResource;Models/my/arrow.glb.d/Prefab.prefab" />
+							</attributes>
+						</component>
+					</components>
+				</node>
+			</nodes>
 		</node>
 		<node _id="20">
 			<attributes>
 				<attribute name="Name" type="String" value="ball3" />
-				<attribute name="Position" type="Vector3" value="0.517936 0.325519 0.222698" />
+				<attribute name="Position" type="Vector3" value="0.719288 0.325519 0.214445" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -218,7 +226,7 @@
 				</component>
 				<component _id="47" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="0.517937 0.325519 0.222698" />
+						<attribute name="Physics Position" type="Vector3" value="0.719288 0.325519 0.214445" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -229,7 +237,7 @@
 		<node _id="21">
 			<attributes>
 				<attribute name="Name" type="String" value="ball1" />
-				<attribute name="Position" type="Vector3" value="-0.47549 0.325519 0.650391" />
+				<attribute name="Position" type="Vector3" value="-0.274138 0.325519 0.642138" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -246,7 +254,7 @@
 				</component>
 				<component _id="50" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-0.47549 0.325519 0.650391" />
+						<attribute name="Physics Position" type="Vector3" value="-0.274138 0.325519 0.642138" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -257,7 +265,7 @@
 		<node _id="22">
 			<attributes>
 				<attribute name="Name" type="String" value="ball2" />
-				<attribute name="Position" type="Vector3" value="-0.469635 0.325519 -0.65323" />
+				<attribute name="Position" type="Vector3" value="-0.268283 0.325519 -0.661484" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -274,7 +282,7 @@
 				</component>
 				<component _id="53" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-0.469635 0.325519 -0.65323" />
+						<attribute name="Physics Position" type="Vector3" value="-0.268283 0.325519 -0.661484" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -285,7 +293,7 @@
 		<node _id="23">
 			<attributes>
 				<attribute name="Name" type="String" value="ball3" />
-				<attribute name="Position" type="Vector3" value="0.517936 0.325519 -0.349864" />
+				<attribute name="Position" type="Vector3" value="0.719288 0.325519 -0.358117" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -302,7 +310,7 @@
 				</component>
 				<component _id="56" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="0.517937 0.325519 -0.349864" />
+						<attribute name="Physics Position" type="Vector3" value="0.719288 0.325519 -0.358117" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -313,7 +321,7 @@
 		<node _id="24">
 			<attributes>
 				<attribute name="Name" type="String" value="ball4" />
-				<attribute name="Position" type="Vector3" value="-0.820707 0.325519 -0.349864" />
+				<attribute name="Position" type="Vector3" value="-0.619355 0.325519 -0.358117" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -330,7 +338,7 @@
 				</component>
 				<component _id="59" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-0.820707 0.325519 -0.349864" />
+						<attribute name="Physics Position" type="Vector3" value="-0.619355 0.325519 -0.358117" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -341,7 +349,7 @@
 		<node _id="25">
 			<attributes>
 				<attribute name="Name" type="String" value="ball4" />
-				<attribute name="Position" type="Vector3" value="-0.820707 0.325519 0.222698" />
+				<attribute name="Position" type="Vector3" value="-0.619355 0.325519 0.214445" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -358,7 +366,7 @@
 				</component>
 				<component _id="62" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-0.820707 0.325519 0.222698" />
+						<attribute name="Physics Position" type="Vector3" value="-0.619355 0.325519 0.214445" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -369,7 +377,7 @@
 		<node _id="26">
 			<attributes>
 				<attribute name="Name" type="String" value="ball1" />
-				<attribute name="Position" type="Vector3" value="-0.238977 0.325519 0.916965" />
+				<attribute name="Position" type="Vector3" value="-0.037625 0.325519 0.908712" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -386,7 +394,7 @@
 				</component>
 				<component _id="69" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-0.238977 0.325519 0.916965" />
+						<attribute name="Physics Position" type="Vector3" value="-0.037625 0.325519 0.908712" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Friction" type="Float" value="1.000000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
@@ -398,7 +406,7 @@
 		<node _id="27">
 			<attributes>
 				<attribute name="Name" type="String" value="ball2" />
-				<attribute name="Position" type="Vector3" value="-0.273613 0.325519 -0.923114" />
+				<attribute name="Position" type="Vector3" value="-0.072261 0.325519 -0.931368" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -415,7 +423,7 @@
 				</component>
 				<component _id="72" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-0.273613 0.325519 -0.923114" />
+						<attribute name="Physics Position" type="Vector3" value="-0.072261 0.325519 -0.931368" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -426,7 +434,7 @@
 		<node _id="28">
 			<attributes>
 				<attribute name="Name" type="String" value="ball3" />
-				<attribute name="Position" type="Vector3" value="0.798209 0.325519 -0.031299" />
+				<attribute name="Position" type="Vector3" value="0.99956 0.325519 -0.039552" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -443,7 +451,7 @@
 				</component>
 				<component _id="75" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="0.798209 0.325519 -0.031299" />
+						<attribute name="Physics Position" type="Vector3" value="0.99956 0.325519 -0.039552" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -454,7 +462,7 @@
 		<node _id="29">
 			<attributes>
 				<attribute name="Name" type="String" value="ball4" />
-				<attribute name="Position" type="Vector3" value="-1.080246 0.325519 -0.033913" />
+				<attribute name="Position" type="Vector3" value="-0.878894 0.325519 -0.042166" />
 				<attribute name="Scale" type="Vector3" value="0.15 0.15 0.15" />
 			</attributes>
 			<components>
@@ -471,7 +479,7 @@
 				</component>
 				<component _id="78" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-1.080246 0.325519 -0.033913" />
+						<attribute name="Physics Position" type="Vector3" value="-0.878894 0.325519 -0.042166" />
 						<attribute name="Mass" type="Float" value="0.500000" />
 						<attribute name="Rolling Friction" type="Float" value="0.010000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
@@ -497,7 +505,6 @@
 		<node _id="31">
 			<attributes>
 				<attribute name="Name" type="String" value="table0" />
-				<attribute name="Position" type="Vector3" value="-0.180932 0 -0.042593" />
 			</attributes>
 			<components>
 				<component _id="93" _typeName="CollisionShape">
@@ -516,7 +523,6 @@
 				</component>
 				<component _id="95" _typeName="RigidBody">
 					<attributes>
-						<attribute name="Physics Position" type="Vector3" value="-0.180932 0 -0.042593" />
 						<attribute name="Friction" type="Float" value="0.100000" />
 						<attribute name="Rolling Friction" type="Float" value="0.050000" />
 						<attribute name="Restitution" type="Float" value="0.900000" />
