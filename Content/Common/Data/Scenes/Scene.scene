@@ -177,8 +177,8 @@
 		<node _id="14">
 			<attributes>
 				<attribute name="Name" type="String" value="CameraNode" />
-				<attribute name="Position" type="Vector3" value="0 5.750593 0" />
-				<attribute name="Rotation" type="Quaternion" value="0.500002 0.500002 0.499998 -0.499998" />
+				<attribute name="Position" type="Vector3" value="0.36 5.750593 0" />
+				<attribute name="Rotation" type="Quaternion" value="0.477716 0.521336 0.477713 -0.521332" />
 			</attributes>
 			<components>
 				<component _id="32" _typeName="Camera" />
@@ -490,7 +490,7 @@
 		<node _id="30">
 			<attributes>
 				<attribute name="Name" type="String" value="SelectNode" />
-				<attribute name="Position" type="Vector3" value="0 1 0" />
+				<attribute name="Position" type="Vector3" value="0 0.65 0" />
 				<attribute name="Scale" type="Vector3" value="0.05 0.05 0.05" />
 			</attributes>
 			<components>

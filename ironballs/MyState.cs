@@ -20,10 +20,12 @@ namespace ironballs
         private Random _random = new Random();
         private Node _selectedBall;
         private Node _lastBall;
+        private Node _trajectory = null;
+        private CustomGeometry _customGeometry = null;
 
         private Vector3 _curVelocity;
-        private float _inertia = 0.9f;
-        private float _speed = 0.05f;
+        private float _inertia = 0.8f;
+        private float _speed = 0.02f;
         private int _hitTimer = 0;
 
         private List<Node> team1 = new List<Node>();
@@ -50,7 +52,6 @@ namespace ironballs
             _cameraNode = _scene.FindChild("CameraNode", true);
             _arrowNode = _scene.FindChild("ArrowNode", true);
             _selectNode = _scene.FindChild("SelectNode", true);
-            //today only
             _selectedBall = _scene.FindChild("ball1", true);
             _lastBall = _selectedBall;
             var temp = _scene.GetChildren();
@@ -69,6 +70,20 @@ namespace ironballs
             _inputMap = Context.ResourceCache.GetResource<InputMap>("Input/MoveAndOrbit.inputmap");
             SetupPlayers();
             if (!t1IsPlayer) nowPlayer = false;
+
+            Material transparentMaterial = new Material(Context);
+            transparentMaterial.CullMode = CullMode.CullNone;
+            transparentMaterial.NumTechniques = 1;
+            transparentMaterial.SetTechnique(0, GetSubsystem<ResourceCache>().GetResource<Technique>("Techniques/NoTextureUnlitAlpha.xml"));
+            transparentMaterial.SetShaderParameter("MatDiffColor", Color.White);
+            transparentMaterial.VertexShaderDefines = "VERTEXCOLOR";
+            transparentMaterial.PixelShaderDefines = "VERTEXCOLOR";
+
+
+
+            _trajectory = _scene.CreateChild("Traectory");
+            _customGeometry = _trajectory.CreateComponent<CustomGeometry>();
+            _customGeometry.SetMaterial(transparentMaterial);
         }
 
         public void SetupPlayers()
@@ -120,6 +135,7 @@ namespace ironballs
 
             if (_hitTimer > 0) 
             {
+                HideTrajectory();
                 _hitTimer--;
                 if (_hitTimer == 2)
                 {
@@ -143,6 +159,7 @@ namespace ironballs
                 _arrowNode.Position = newPosition;
                 //_arrowNode.Direction = (_arrowNode.Position - _selectedBall.Position).Normalized;
                 ArrowDir();
+                ShowTrajectory();
 
                 if (_inputMap.Evaluate("Use") > 0.5f && _hitTimer < 1) Hit();
 
@@ -150,7 +167,6 @@ namespace ironballs
             else
             {
                 Hit();
-                //hide arrow
             }
 
 
@@ -162,6 +178,9 @@ namespace ironballs
             ImGui.Text("Team 2 count:" + team2.Count.ToString());
             ImGui.Text("Team 3 count:" + team3.Count.ToString());
             ImGui.Text("Team 4 count:" + team4.Count.ToString());
+            ImGui.Text(EndPosition().ToString());
+            ImGui.Text(_selectedBall.Position.ToString());
+            ImGui.Text(_arrowNode.Position.ToString());
             ImGui.End();
         }
 
@@ -291,6 +310,45 @@ namespace ironballs
             body.ApplyImpulse(( _selectedBall.Position - _arrowNode.Position).Normalized * 1.15f);
             _lastBall = _selectedBall;
             _hitTimer = 300;
+        }
+
+        public void ShowTrajectory()
+        {
+            _trajectory.IsEnabled = true;
+            var e = EndPosition();
+            _customGeometry.BeginGeometry(0, PrimitiveType.LineStrip);
+            GeometryBuilder builder = new GeometryBuilder(_customGeometry);
+            SimpleVertex[] frame = new SimpleVertex[4];
+            frame[0] = new SimpleVertex(new Vector3(_selectedBall.Position.X, 0.35f, _selectedBall.Position.Z), Color.Red);
+            frame[1] = new SimpleVertex(new Vector3(e.X, 0.35f, e.Z), Color.Red);
+            frame[2] = new SimpleVertex(new Vector3(e.X, 0.3f, e.Z), Color.Red);
+            frame[3] = new SimpleVertex(new Vector3(_selectedBall.Position.X, 0.3f, _selectedBall.Position.Z), Color.Red);
+            builder.BuildSolidQuad(frame);
+
+            _customGeometry.Commit();
+        }
+
+        public void HideTrajectory()
+        {
+            _trajectory.IsEnabled = false;
+        }
+
+        public Vector3 EndPosition()
+        {
+            try
+            {
+                var _raycastResult = new PhysicsRaycastResult();
+                var world = _scene.GetComponent<PhysicsWorld>();
+                world.RaycastSingle(_raycastResult, new Ray(_selectedBall.WorldPosition, - _arrowNode.WorldDirection),
+                    10f);
+                var selectedNode = _raycastResult.Body?.Node;
+                return _raycastResult.Position;
+
+            }
+            catch 
+            {
+                return Vector3.Zero;
+            }
         }
 
         public void RemoveBalls()
