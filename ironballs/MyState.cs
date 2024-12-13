@@ -28,18 +28,14 @@ namespace ironballs
         private float _speed = 0.02f;
         private int _hitTimer = 0;
 
-        private List<Node> team1 = new List<Node>();
-        private List<Node> team2 = new List<Node>();
-        private List<Node> team3 = new List<Node>();
-        private List<Node> team4 = new List<Node>();
-        private string activeTeam = "team1";
-        private bool t1IsPlayer = false;
-        private bool t2IsPlayer = false;
-        private bool t3IsPlayer = false;
-        private bool t4IsPlayer = false;
-        private bool nowPlayer = true;
+        private Team team1 = new Team("team1");
+        private Team team2 = new Team("team2");
+        private Team team3 = new Team("team3");
+        private Team team4 = new Team("team4");
+        private Team _activeTeam = null;
+        private bool _nowPlayer = true;
 
-
+        private readonly DirectionalPadAdapter _directionalPad;
 
         public MyState(UrhoPluginApplication app) : base(app.Context)
         {
@@ -57,10 +53,10 @@ namespace ironballs
             var temp = _scene.GetChildren();
             foreach (var child in temp)
             {
-                if (child.Name == "ball1") team1.Add(child);
-                if (child.Name == "ball2") team2.Add(child);
-                if (child.Name == "ball3") team3.Add(child);
-                if (child.Name == "ball4") team4.Add(child);
+                if (child.Name == "ball1") team1.Balls.Add(child);
+                else if (child.Name == "ball2") team2.Balls.Add(child);
+                else if (child.Name == "ball3") team3.Balls.Add(child);
+                else if (child.Name == "ball4") team4.Balls.Add(child);
             }
             _camera = _cameraNode.GetComponent<Camera>();
             _viewport = Context.CreateObject<Viewport>();
@@ -68,8 +64,9 @@ namespace ironballs
             _viewport.Camera = _camera;
             SetViewport(0, _viewport);
             _inputMap = Context.ResourceCache.GetResource<InputMap>("Input/MoveAndOrbit.inputmap");
+            _directionalPad = new DirectionalPadAdapter(Context);
             SetupPlayers();
-            if (!t1IsPlayer) nowPlayer = false;
+            if (!team1.IsPlayer) _nowPlayer = false;
 
             Material transparentMaterial = new Material(Context);
             transparentMaterial.CullMode = CullMode.CullNone;
@@ -79,49 +76,34 @@ namespace ironballs
             transparentMaterial.VertexShaderDefines = "VERTEXCOLOR";
             transparentMaterial.PixelShaderDefines = "VERTEXCOLOR";
 
-
+            _activeTeam = team1;
 
             _trajectory = _scene.CreateChild("Traectory");
             _customGeometry = _trajectory.CreateComponent<CustomGeometry>();
             _customGeometry.SetMaterial(transparentMaterial);
         }
 
+
         public void SetupPlayers()
         {
-            if (MySetup.Players == 0)
+            var maxPlayers = MySetup.Players;
+            for (int i = 1; i <= maxPlayers; i++)
             {
-                t1IsPlayer = false;
-                t2IsPlayer = false;
-                t3IsPlayer = false;
-                t4IsPlayer = false;
-            }
-            if (MySetup.Players == 1)
-            {
-                t1IsPlayer = true;
-                t2IsPlayer = false;
-                t3IsPlayer = false;
-                t4IsPlayer = false;
-            }
-            if (MySetup.Players == 2)
-            {
-                t1IsPlayer = true;
-                t2IsPlayer = true;
-                t3IsPlayer = false;
-                t4IsPlayer = false;
-            }
-            if (MySetup.Players == 3)
-            {
-                t1IsPlayer = true;
-                t2IsPlayer = true;
-                t3IsPlayer = true;
-                t4IsPlayer = false;
-            }
-            if (MySetup.Players == 4)
-            {
-                t1IsPlayer = true;
-                t2IsPlayer = true;
-                t3IsPlayer = true;
-                t4IsPlayer = true;
+                switch (i)
+                {
+                    case 1:
+                        team1.IsPlayer = MySetup.Players >= i;
+                        break;
+                    case 2:
+                        team2.IsPlayer = MySetup.Players >= i;
+                        break;
+                    case 3:
+                        team3.IsPlayer = MySetup.Players >= i;
+                        break;
+                    case 4:
+                        team4.IsPlayer = MySetup.Players >= i;
+                        break;
+                }
             }
         }
 
@@ -143,7 +125,7 @@ namespace ironballs
                     NextPlayer();
                 }
             } 
-            else if (nowPlayer)
+            else if (_nowPlayer)
             {
                 var left = _inputMap.Evaluate("Left");
                 var right = _inputMap.Evaluate("Right");
@@ -154,10 +136,7 @@ namespace ironballs
                 velocity.Normalize();
                 _curVelocity = _inertia * _curVelocity + (1 - _inertia) * velocity * _speed;
                 var newPosition = _arrowNode.Position + _curVelocity;
-                //newPosition.X = MyTools.Clamp(newPosition.X, -6.1f, 6.1f);
-                //newPosition.Z = MyTools.Clamp(newPosition.Z, -1.5f, 6.6f);
                 _arrowNode.Position = newPosition;
-                //_arrowNode.Direction = (_arrowNode.Position - _selectedBall.Position).Normalized;
                 ArrowDir();
                 ShowTrajectory();
 
@@ -172,12 +151,12 @@ namespace ironballs
 
             //debug
             ImGui.Begin("Debug");
-            ImGui.Text(activeTeam);
+            ImGui.Text(_activeTeam.Name);
             ImGui.Text(_hitTimer.ToString());
-            ImGui.Text("Team 1 count:" + team1.Count.ToString());
-            ImGui.Text("Team 2 count:" + team2.Count.ToString());
-            ImGui.Text("Team 3 count:" + team3.Count.ToString());
-            ImGui.Text("Team 4 count:" + team4.Count.ToString());
+            ImGui.Text("Team 1 count:" + team1.Balls.Count.ToString());
+            ImGui.Text("Team 2 count:" + team2.Balls.Count.ToString());
+            ImGui.Text("Team 3 count:" + team3.Balls.Count.ToString());
+            ImGui.Text("Team 4 count:" + team4.Balls.Count.ToString());
             ImGui.Text(EndPosition().ToString());
             ImGui.Text(_selectedBall.Position.ToString());
             ImGui.Text(_arrowNode.Position.ToString());
@@ -187,87 +166,87 @@ namespace ironballs
         public void NextPlayer()
         {
             //t1
-            if (activeTeam == "team1")
+            if (_activeTeam == team1)
             {
-                activeTeam = "team2";
-                if (team2.Count > 0)
+                _activeTeam = team2;
+                if (team2.Balls.Count > 0)
                 {
                     _random = new Random();
-                    var r = _random.Next(0,team2.Count-1);
-                    _selectedBall = team2[r];
-                    if (t2IsPlayer)
+                    var r = _random.Next(0,team2.Balls.Count);
+                    _selectedBall = team2.Balls[r];
+                    if (team2.IsPlayer)
                     {
-                        nowPlayer = true;
+                        _nowPlayer = true;
                         _arrowNode.Position = new Vector3(0, 0.25f, 0);
                     }
                     else
                     {
-                        nowPlayer = false;
+                        _nowPlayer = false;
                         AiAroowPos();
                     }
                 }
                 else NextPlayer();
             }
             //t2
-            else if (activeTeam == "team2")
+            else if (_activeTeam == team2)
             {
-                activeTeam = "team3";
-                if (team3.Count > 0)
+                _activeTeam = team3;
+                if (team3.Balls.Count > 0)
                 {
                     _random = new Random();
-                    var r = _random.Next(0, team3.Count - 1);
-                    _selectedBall = team3[r];
-                    if (t3IsPlayer)
+                    var r = _random.Next(0, team3.Balls.Count);
+                    _selectedBall = team3.Balls[r];
+                    if (team3.IsPlayer)
                     {
-                        nowPlayer = true;
+                        _nowPlayer = true;
                         _arrowNode.Position = new Vector3(0, 0.25f, 0);
                     }
                     else
                     {
-                        nowPlayer = false;
+                        _nowPlayer = false;
                         AiRandomPos();
                     }
                 }
                 else NextPlayer();
             }
             //t3
-            else if (activeTeam == "team3")
+            else if (_activeTeam == team3)
             {
-                activeTeam = "team4";
-                if (team4.Count > 0)
+                _activeTeam = team4;
+                if (team4.Balls.Count > 0)
                 {
                     _random = new Random();
-                    var r = _random.Next(0, team4.Count - 1);
-                    _selectedBall = team4[r];
-                    if (t4IsPlayer)
+                    var r = _random.Next(0, team4.Balls.Count);
+                    _selectedBall = team4.Balls[r];
+                    if (team4.IsPlayer)
                     {
-                        nowPlayer = true;
+                        _nowPlayer = true;
                         _arrowNode.Position = new Vector3(0, 0.25f, 0);
                     }
                     else
                     {
-                        nowPlayer = false;
+                        _nowPlayer = false;
                         AiAroowPos();
                     }
                 }
                 else NextPlayer();
             }
             //t4
-            else if (activeTeam == "team4")
+            else if (_activeTeam == team4)
             {
-                activeTeam = "team1";
-                if (team1.Count > 0)
+                _activeTeam = team1;
+                if (team1.Balls.Count > 0)
                 {
-                    var r = _random.Next(0, team1.Count - 1);
-                    _selectedBall = team1[r];
-                    if (t1IsPlayer)
+                    var r = _random.Next(0, team1.Balls.Count);
+                    _selectedBall = team1.Balls[r];
+                    if (team1.IsPlayer)
                     {
-                        nowPlayer = true;
+                        _nowPlayer = true;
                         _arrowNode.Position = new Vector3(0, 0.25f, 0);
                     }
                     else
                     {
-                        nowPlayer = false;
+                        _nowPlayer = false;
                         AiNullPos();
                     }
                 }
@@ -286,17 +265,6 @@ namespace ironballs
             var v = new Vector3(_random.Next(-4,4), 0.25f, _random.Next(-4, 4));
             _arrowNode.Position = v;
             ArrowDir();
-        }
-        public void AiLastPos()
-        {
-            if (_lastBall != null)
-            {
-                var t = _lastBall.Position - _selectedBall.Position;
-                var v = new Vector3(t.X * 2, 0.25f, t.Z * 2);
-                _arrowNode.Position = v;
-                ArrowDir();
-            }
-            else AiRandomPos();
         }
         public void AiNullPos()
         {
@@ -353,35 +321,35 @@ namespace ironballs
 
         public void RemoveBalls()
         {
-            foreach (var ball in team1.ToList())
+            foreach (var ball in team1.Balls.ToList())
             {
                 if (ball.Position.Y < -2)
                 {
-                    team1.Remove(ball);
+                    team1.Balls.Remove(ball);
                     ball.Remove();
                 }
             }
-            foreach (var ball in team2.ToList())
+            foreach (var ball in team2.Balls.ToList())
             {
                 if (ball.Position.Y < -2)
                 {
-                    team2.Remove(ball);
+                    team2.Balls.Remove(ball);
                     ball.Remove();
                 }
             }
-            foreach (var ball in team3.ToList())
+            foreach (var ball in team3.Balls.ToList())
             {
                 if (ball.Position.Y < -2)
                 {
-                    team3.Remove(ball);
+                    team3.Balls.Remove(ball);
                     ball.Remove();
                 }
             }
-            foreach (var ball in team4.ToList())
+            foreach (var ball in team4.Balls.ToList())
             {
                 if (ball.Position.Y < -2)
                 {
-                    team4.Remove(ball);
+                    team4.Balls.Remove(ball);
                     ball.Remove();
                 }
             }
@@ -396,6 +364,7 @@ namespace ironballs
         public override void Activate(StringVariantMap bundle)
         {
             SubscribeToEvent(E.KeyUp, HandleKeyUp);
+            _directionalPad.IsEnabled = true;
 
             _scene.IsUpdateEnabled = true;
 
@@ -416,6 +385,26 @@ namespace ironballs
             base.Dispose(disposing);
         }
 
+        private void HandleDpadKeyDown(VariantMap args)
+        {
+            var scanCode = (Scancode)args[E.KeyUp.Scancode].Int;
+            switch (scanCode)
+            {
+                case Scancode.ScancodeUp:
+                    if (_nowPlayer) _arrowNode.Position += new Vector3(0.2f);
+                    break;
+                case Scancode.ScancodeDown:
+                    if (_nowPlayer) _arrowNode.Position += new Vector3(-0.2f);
+                    break;
+                case Scancode.ScancodeLeft:
+                    if (_nowPlayer) _arrowNode.Position += new Vector3(0,0,2f);
+                    break;
+                case Scancode.ScancodeRight:
+                    if (_nowPlayer) _arrowNode.Position += new Vector3(0,0,-0.2f);
+                    break;
+            }
+        }
+
         private void HandleKeyUp(VariantMap args)
         {
             var key = (Key)args[E.KeyUp.Key].Int;
@@ -427,5 +416,7 @@ namespace ironballs
                     return;
             }
         }
+
+
     }
 }

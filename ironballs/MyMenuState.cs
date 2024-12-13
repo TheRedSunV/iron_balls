@@ -15,6 +15,7 @@ namespace ironballs
         private readonly Camera _camera;
         private readonly Viewport _viewport;
         private readonly InputMap _inputMap;
+        private readonly DirectionalPadAdapter _directionalPad;
 
         private bool _more = false;
         private bool _less = false;
@@ -35,7 +36,7 @@ namespace ironballs
             _viewport.Camera = _camera;
             SetViewport(0, _viewport);
             _inputMap = Context.ResourceCache.GetResource<InputMap>("Input/MoveAndOrbit.inputmap");
-
+            _directionalPad = new DirectionalPadAdapter(Context);
             _textNode = _scene.FindChild("Ground Plane", true).FindChild("PlayersText", true);
         }
 
@@ -83,6 +84,7 @@ namespace ironballs
         public override void Activate(StringVariantMap bundle)
         {
             SubscribeToEvent(E.KeyUp, HandleKeyUp);
+            _directionalPad.IsEnabled = true;
 
             _scene.IsUpdateEnabled = true;
 
@@ -101,6 +103,26 @@ namespace ironballs
             _scene?.Dispose();
 
             base.Dispose(disposing);
+        }
+
+        private void HandleDpadKeyDown(VariantMap args)
+        {
+            var scanCode = (Scancode)args[E.KeyUp.Scancode].Int;
+            switch (scanCode)
+            {
+                case Scancode.ScancodeUp:
+                    _app.ToNewGame();
+                    break;
+                case Scancode.ScancodeDown:
+                    _app.HandleBackKey();
+                    break;
+                case Scancode.ScancodeLeft:
+                    MySetup.Players--;
+                    break;
+                case Scancode.ScancodeRight:
+                    MySetup.Players++;
+                    break;
+            }
         }
 
         private void HandleKeyUp(VariantMap args)
