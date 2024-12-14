@@ -35,7 +35,6 @@ namespace ironballs
         private Team _activeTeam = null;
         private bool _nowPlayer = true;
 
-        private readonly DirectionalPadAdapter _directionalPad;
 
         public MyState(UrhoPluginApplication app) : base(app.Context)
         {
@@ -64,7 +63,6 @@ namespace ironballs
             _viewport.Camera = _camera;
             SetViewport(0, _viewport);
             _inputMap = Context.ResourceCache.GetResource<InputMap>("Input/MoveAndOrbit.inputmap");
-            _directionalPad = new DirectionalPadAdapter(Context);
             SetupPlayers();
             if (!team1.IsPlayer) _nowPlayer = false;
 
@@ -361,11 +359,24 @@ namespace ironballs
         }
 
 
+        private void HandleTouchEnd(VariantMap args)
+        {
+            if (_nowPlayer && args[E.TouchEnd.Y].Int < 200) Hit();
+        }
+
+        private void HandleTouchMove(VariantMap args)
+        {
+            if (_nowPlayer) 
+            {
+                _arrowNode.Position += new Vector3(args[E.TouchMove.Y].Int, 0, -args[E.TouchMove.X].Int)*0.1f;
+            }
+        }
+
         public override void Activate(StringVariantMap bundle)
         {
             SubscribeToEvent(E.KeyUp, HandleKeyUp);
-            _directionalPad.IsEnabled = true;
-
+            SubscribeToEvent(E.TouchEnd, HandleTouchEnd);
+            SubscribeToEvent(E.TouchMove, HandleTouchMove);
             _scene.IsUpdateEnabled = true;
 
             base.Activate(bundle);
@@ -374,7 +385,8 @@ namespace ironballs
         public override void Deactivate()
         {
             _scene.IsUpdateEnabled = false;
-            UnsubscribeFromEvent(E.KeyUp);
+            UnsubscribeFromEvent(E.TouchEnd);
+            UnsubscribeFromEvent(E.TouchMove);
             base.Deactivate();
         }
 
@@ -385,25 +397,6 @@ namespace ironballs
             base.Dispose(disposing);
         }
 
-        private void HandleDpadKeyDown(VariantMap args)
-        {
-            var scanCode = (Scancode)args[E.KeyUp.Scancode].Int;
-            switch (scanCode)
-            {
-                case Scancode.ScancodeUp:
-                    if (_nowPlayer) _arrowNode.Position += new Vector3(0.2f);
-                    break;
-                case Scancode.ScancodeDown:
-                    if (_nowPlayer) _arrowNode.Position += new Vector3(-0.2f);
-                    break;
-                case Scancode.ScancodeLeft:
-                    if (_nowPlayer) _arrowNode.Position += new Vector3(0,0,2f);
-                    break;
-                case Scancode.ScancodeRight:
-                    if (_nowPlayer) _arrowNode.Position += new Vector3(0,0,-0.2f);
-                    break;
-            }
-        }
 
         private void HandleKeyUp(VariantMap args)
         {
