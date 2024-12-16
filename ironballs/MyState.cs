@@ -174,7 +174,7 @@ namespace ironballs
                     _selectedBall = team2.Balls[r];
                     if (team2.IsPlayer)
                     {
-                        PlayNextTeamSound(_app.Context, _activeTeam);
+                        //PlayNextTeamSound(_activeTeam);
                         _nowPlayer = true;
                         _arrowNode.Position = new Vector3(0, 0.25f, 0);
                     }
@@ -251,7 +251,7 @@ namespace ironballs
                 }
                 else NextPlayer();
             }
-            PlayNextTeamSound(_app.Context, _activeTeam);
+            PlayNextTeamSound(_activeTeam);
         }
 
         public void AiAroowPos()
@@ -412,23 +412,23 @@ namespace ironballs
             }
         }
 
-        private void PlayNextTeamSound(Context context, Team activeTeam)
+        private void PlayNextTeamSound(Team activeTeam)
         {
             try {
                 System.Console.WriteLine("test");
                 System.Console.WriteLine(activeTeam);
                 switch (activeTeam.Name) {
                     case "team1":
-                        PlaySound(context,"Sounds/Team1StartSound.ogg");
+                        PlaySound("Sounds/FirstTeamStart.ogg");
                         return;
                     case "team2":
-                        PlaySound(context, "Sounds/Team1StartSound.ogg");
+                        PlaySound("Sounds/SecondTeamStart.ogg");
                         return;
                     case "team3":
-                        PlaySound(context, "Sounds/Team1StartSound.ogg");
+                        PlaySound("Sounds/ThirdTeamStart.ogg");
                         return;
                     case "team4":
-                        PlaySound(context, "Sounds/Team1StartSound.ogg");
+                        PlaySound("Sounds/FourthTeamStart.ogg");
                         return;
                     default: 
                         return;
@@ -440,18 +440,18 @@ namespace ironballs
         }
 
         /// <param name="context">Application context.</param>
-        private void PlaySound(Context context, string filePath)
+        private void PlaySound(string filePath)
         {
-            ResourceCache cache = context.GetSubsystem<ResourceCache>();
+            ResourceCache cache = _app.Context.GetSubsystem<ResourceCache>();
             SharedPtr<Sound> sound = cache.GetResource<Sound>(filePath);
 
             if (sound)
             {
-                //            // Создание узла для источника звука
+             // Создание узла для источника звука
              var soundNode = _scene.CreateChild("SoundNode");
              var soundSource = soundNode.CreateComponent<SoundSource>();
 
-                //            // Воспроизведение звука
+             // Воспроизведение звука
              soundSource.Play(sound);
             }
         }
