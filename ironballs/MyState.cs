@@ -174,6 +174,7 @@ namespace ironballs
                     _selectedBall = team2.Balls[r];
                     if (team2.IsPlayer)
                     {
+                        PlayNextTeamSound(_activeTeam);
                         _nowPlayer = true;
                         _arrowNode.Position = new Vector3(0, 0.25f, 0);
                     }
@@ -250,6 +251,7 @@ namespace ironballs
                 }
                 else NextPlayer();
             }
+            PlayNextTeamSound(_activeTeam);
         }
 
         public void AiAroowPos()
@@ -410,6 +412,49 @@ namespace ironballs
             }
         }
 
+        private void PlayNextTeamSound(string activeTeam)
+        {
+            try {
+                switch (activeTeam) {
+                    case team1:
+                        PlaySound("Sounds/Team1StartSound.ogg");
+                        return;
+                    case team2:
+                        PlaySound("Sounds/Team1StartSound.ogg");
+                        return;
+                    case team3:
+                        PlaySound("Sounds/Team1StartSound.ogg");
+                        return;
+                    case team4:
+                        PlaySound("Sounds/Team1StartSound.ogg");
+                        return;
+                    default: 
+                        return;
+                }
+            }
+            catch (Exception e) {
+                Log.Error(e.Message);
+            }
+        }
 
     }
+
+    private void PlaySound(string filePath)
+    {
+        // Загрузка звука
+        var sound = ResourceCache.GetSound(filePath);
+
+        // Создание узла для источника звука
+        var soundNode = Scene.CreateChild("SoundNode");
+        var soundSource = soundNode.CreateComponent<SoundSource>();
+
+        // Воспроизведение звука
+        soundSource.Play(sound);
+
+    }
+
+}
+
+
+}
 }
