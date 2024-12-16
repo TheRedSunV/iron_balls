@@ -452,9 +452,4 @@ namespace ironballs
         soundSource.Play(sound);
 
     }
-
-}
-
-
-}
 }
