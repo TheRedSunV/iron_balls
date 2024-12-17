@@ -278,6 +278,7 @@ namespace ironballs
             body.ApplyImpulse(( _selectedBall.Position - _arrowNode.Position).Normalized * 1.15f);
             _lastBall = _selectedBall;
             _hitTimer = 300;
+            PlaySound("Sounds/Hit.ogg");
         }
 
         public void ShowTrajectory()
@@ -415,8 +416,6 @@ namespace ironballs
         private void PlayNextTeamSound(Team activeTeam)
         {
             try {
-                System.Console.WriteLine("test");
-                System.Console.WriteLine(activeTeam);
                 switch (activeTeam.Name) {
                     case "team1":
                         PlaySound("Sounds/FirstTeamStart.ogg");
@@ -439,7 +438,6 @@ namespace ironballs
             }
         }
 
-        /// <param name="context">Application context.</param>
         private void PlaySound(string filePath)
         {
             ResourceCache cache = _app.Context.GetSubsystem<ResourceCache>();
@@ -455,19 +453,5 @@ namespace ironballs
              soundSource.Play(sound);
             }
         }
-//        private void PlaySound(Context* context, string filePath)
-//        {
-//            ResourceCache.GetSubsystem
-//           // Загрузка звука
-//            var sound = ResourceCache.GetSound(filePath);
-//
-//            // Создание узла для источника звука
-//            var soundNode = Scene.CreateChild("SoundNode");
-//            var soundSource = soundNode.CreateComponent<SoundSource>();
-//
-//            // Воспроизведение звука
- //           soundSource.Play(sound);
-//
-//        }
     }
 }
