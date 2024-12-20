@@ -36,6 +36,7 @@ namespace ironballs
             SetViewport(0, _viewport);
             _inputMap = Context.ResourceCache.GetResource<InputMap>("Input/MoveAndOrbit.inputmap");
             _textNode = _scene.FindChild("Ground Plane", true).FindChild("PlayersText", true);
+            PlaySound("Music/MenuTheme.ogg");
         }
 
 
@@ -119,6 +120,22 @@ namespace ironballs
                 case Key.KeyBackspace:
                     _app.HandleBackKey();
                     return;
+            }
+        }
+
+        private void PlaySound(string filePath)
+        {
+            ResourceCache cache = _app.Context.GetSubsystem<ResourceCache>();
+            SharedPtr<Sound> sound = cache.GetResource<Sound>(filePath);
+
+            if (sound)
+            {
+                // Создание узла для источника звука
+                var soundNode = _scene.CreateChild("SoundNode");
+                var soundSource = soundNode.CreateComponent<SoundSource>();
+
+                // Воспроизведение звука
+                soundSource.Play(sound);
             }
         }
 
